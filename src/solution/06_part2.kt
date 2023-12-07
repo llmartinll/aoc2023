@@ -3,19 +3,9 @@ package solution
 import println
 import readInput
 import kotlin.math.pow
-import kotlin.system.measureNanoTime
 
 fun main() {
-    val day = "day06"
-    val test = readInput("$day/test")
-    val input = readInput("$day/input")
-
-//    val solver = Day6_part2(test)
-    val solver = Day6_part2(input)
-    val elapsed = measureNanoTime {
-        solver.run().println()
-    }
-    "time taken: $elapsed ms".println()
+    Day6_part2(readInput("Day07/input")).run().println()
 }
 
 class Day6_part2(input: List<String>) {

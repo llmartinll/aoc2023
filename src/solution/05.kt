@@ -2,18 +2,9 @@ package solution
 
 import println
 import readInput
-import kotlin.system.measureTimeMillis
 
 fun main() {
-    val day = "day05"
-    val test = readInput("$day/test")
-    val input = readInput("$day/input")
-
-    val elapsed = measureTimeMillis {
-        Day5(test).run().println()
-        Day5(input).run().println()
-    }
-    "time taken: $elapsed ms".println()
+    Day5(readInput("Day05/input")).run().println()
 }
 
 class Day5(input: List<String>) {
@@ -29,14 +20,14 @@ class Day5(input: List<String>) {
     fun Set<MapEntry>.get(source: Long) =
         this.find { source in it.getSourceRange() }?.getDestinationForSource(source) ?: source
 
-    var seeds: MutableSet<Long> = mutableSetOf()
-    var seedToSoilMap: MutableSet<MapEntry> = mutableSetOf()
-    var soilToFertilizerMap: MutableSet<MapEntry> = mutableSetOf()
-    var fertilizerToWaterMap: MutableSet<MapEntry> = mutableSetOf()
-    var waterToLightMap: MutableSet<MapEntry> = mutableSetOf()
-    var lightToTemperatureMap: MutableSet<MapEntry> = mutableSetOf()
-    var temperatureToHumidityMap: MutableSet<MapEntry> = mutableSetOf()
-    var humidityToLocationMap: MutableSet<MapEntry> = mutableSetOf()
+    private var seeds: MutableSet<Long> = mutableSetOf()
+    private var seedToSoilMap: MutableSet<MapEntry> = mutableSetOf()
+    private var soilToFertilizerMap: MutableSet<MapEntry> = mutableSetOf()
+    private var fertilizerToWaterMap: MutableSet<MapEntry> = mutableSetOf()
+    private var waterToLightMap: MutableSet<MapEntry> = mutableSetOf()
+    private var lightToTemperatureMap: MutableSet<MapEntry> = mutableSetOf()
+    private var temperatureToHumidityMap: MutableSet<MapEntry> = mutableSetOf()
+    private var humidityToLocationMap: MutableSet<MapEntry> = mutableSetOf()
 
     private fun getLocationForSeed(seed: Long): Long {
         val soil = seedToSoilMap.get(seed)

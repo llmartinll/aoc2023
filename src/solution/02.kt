@@ -4,12 +4,7 @@ import println
 import readInput
 
 fun main() {
-    val day = "day02"
-    val test = readInput("$day/test")
-    val input = readInput("$day/input")
-
-    Day2().part1(input).println()
-    Day2().part2(input).println()
+    Day2().part2(readInput("Day02/input")).println()
 }
 
 class Day2 {
@@ -19,17 +14,13 @@ class Day2 {
 
     private fun String.toColor() = Color.valueOf(this.uppercase())
 
-    fun part1(input: List<String>): Int {
-        val map = createMap(input)
-        val possibleGames = map
+    fun part1(input: List<String>): Int =
+        createMap(input)
             .filter {
                 it.value.get(Color.BLUE)!! <= 14
                     && it.value.get(Color.RED)!! <= 12
                     && it.value.get(Color.GREEN)!! <= 13
-            }
-        val possibleIds = possibleGames.map { it.key }
-        return possibleIds.sum()
-    }
+            }.map { it.key }.sum()
 
     fun part2(input: List<String>): Int =
         createMap(input).entries.sumOf { it.value.values.reduce { acc, i -> acc * i } }

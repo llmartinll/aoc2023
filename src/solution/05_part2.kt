@@ -4,30 +4,21 @@ import println
 import readInput
 import kotlin.math.max
 import kotlin.math.min
-import kotlin.system.measureTimeMillis
 
 fun main() {
-    val day = "day05"
-    val test = readInput("$day/test")
-    val input = readInput("$day/input")
-    val solver = Day5_part2(input)
-
-    val elapsed = measureTimeMillis {
-        solver.run().println()
-    }
-    "time taken: $elapsed ms".println()
+    Day5_part2(readInput("Day05/input")).run().println()
 }
 
 class Day5_part2(input: List<String>) {
-    var seedRanges: MutableSet<LongRange> = mutableSetOf()
+    private var seedRanges: MutableSet<LongRange> = mutableSetOf()
 
-    var seedToSoilMap: MutableMap<LongRange, Long> = mutableMapOf() // source range, shift
-    var soilToFertilizerMap: MutableMap<LongRange, Long> = mutableMapOf()
-    var fertilizerToWaterMap: MutableMap<LongRange, Long> = mutableMapOf()
-    var waterToLightMap: MutableMap<LongRange, Long> = mutableMapOf()
-    var lightToTemperatureMap: MutableMap<LongRange, Long> = mutableMapOf()
-    var temperatureToHumidityMap: MutableMap<LongRange, Long> = mutableMapOf()
-    var humidityToLocationMap: MutableMap<LongRange, Long> = mutableMapOf()
+    private var seedToSoilMap: MutableMap<LongRange, Long> = mutableMapOf() // source range, shift
+    private var soilToFertilizerMap: MutableMap<LongRange, Long> = mutableMapOf()
+    private var fertilizerToWaterMap: MutableMap<LongRange, Long> = mutableMapOf()
+    private var waterToLightMap: MutableMap<LongRange, Long> = mutableMapOf()
+    private var lightToTemperatureMap: MutableMap<LongRange, Long> = mutableMapOf()
+    private var temperatureToHumidityMap: MutableMap<LongRange, Long> = mutableMapOf()
+    private var humidityToLocationMap: MutableMap<LongRange, Long> = mutableMapOf()
 
     private fun LongRange.overLapWith(other: LongRange): LongRange =
         max(this.first, other.first)..min(this.last, other.last)

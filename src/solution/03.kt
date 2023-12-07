@@ -5,14 +5,7 @@ import println
 import readInput
 
 fun main() {
-    val day = "day03"
-    val test = readInput("$day/test")
-    val input = readInput("$day/input")
-
-    Day3(test).part1().println()
-    Day3(input).part1().println()
-    Day3(test).part2().println()
-    Day3(input).part2().println()
+    Day3(readInput("Day03/input")).part2().println()
 }
 
 class Day3(input: List<String>) {

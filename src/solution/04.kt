@@ -3,20 +3,9 @@ package solution
 import println
 import readInput
 import kotlin.math.pow
-import kotlin.system.measureTimeMillis
 
 fun main() {
-    val day = "day04"
-    val test = readInput("$day/test")
-    val input = readInput("$day/input")
-
-    val elapsed = measureTimeMillis {
-        Day4().part1(test).println()
-        Day4().part1(input).println()
-        Day4().part2(test).println()
-        Day4().part2(input).println()
-    }
-    "time taken: $elapsed ms".println()
+    Day4().part2(readInput("Day04/input")).println()
 }
 
 class Day4 {
