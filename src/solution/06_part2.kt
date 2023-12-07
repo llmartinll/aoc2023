@@ -1,82 +1,60 @@
 package solution
 
-import print
 import println
 import readInput
-import kotlin.system.measureTimeMillis
+import kotlin.math.pow
+import kotlin.system.measureNanoTime
 
 fun main() {
     val day = "day06"
     val test = readInput("$day/test")
     val input = readInput("$day/input")
 
-    val elapsed = measureTimeMillis {
-        Day6(test).run().println()
-        Day6(input).run().println()
+//    val solver = Day6_part2(test)
+    val solver = Day6_part2(input)
+    val elapsed = measureNanoTime {
+        solver.run().println()
     }
     "time taken: $elapsed ms".println()
 }
 
-class Day6(input: List<String>) {
-    data class Race(val duration: Int, val recordDistance: Int)
-    data class Boat(val startingSpeed: Int, val mmPerSecondIncrease: Int) {
-        fun getTravelDistance(holdTime: Int, raceDuration: Int) =
-            startingSpeed + (holdTime * mmPerSecondIncrease) * (raceDuration - holdTime)
+class Day6_part2(input: List<String>) {
+    private val race: Race
+
+    data class Race(val raceDuration: Long, val recordDistance: Long)
+
+    fun run(): Long =
+        race.getRangeToBeat().length()
+
+    private fun Race.getRangeToBeat(): LongRange {
+        val travelDistanceToBeat = recordDistance + 1
+        val a = 1
+        val b = -raceDuration
+        val c = travelDistanceToBeat
+        val min = ((-b - Math.sqrt(b.toDouble().pow(2) - 4 * a * c)) / 2 * a).toLong() + 1
+        val max = ((-b + Math.sqrt(b.toDouble().pow(2) - 4 * a * c)) / 2 * a).toLong()
+        return min..max
     }
 
-    private val boats: Set<Boat>
-    private val races: Map<Int, Race>
-
-    fun run(): Long {
-        val winingTimes = findWinningTimes(races[1]!!, boats.first())
-        println(" winning times: $winingTimes")
-        findNumberOfWaysToBeat(races, boats.first()).println()
-        return 1
-    }
-
-    private fun findNumberOfWaysToBeat(races: Map<Int, Race>, boat: Boat): Long {
-        val test = races.map{race ->
-           findWinningTimes(race.value, boat).size.toLong()
-        }
-        return test.reduce { acc, i -> acc * i }
-    }
-
-    private fun findWinningTimes(race: Race, boat: Boat): List<Int> =
-        (0..race.duration).filter { holdDuration ->
-            val travelDistance = boat.getTravelDistance(holdDuration, race.duration)
-            travelDistance > race.recordDistance
-        }
+    private fun LongRange.length() =
+        this.last - this.first + 1
 
     init {
-        val racesBuilder: MutableMap<Int, Race> = mutableMapOf()
-
+        var duration = 0L
+        var recordTime = 0L
         input.forEach { string ->
             when {
                 string.startsWith("Time:") -> {
-                    var gameNo = 1
                     val part = string.substringAfter("Time: ")
-                    Regex("\\d+").findAll(part).forEach {
-                        racesBuilder[gameNo] = Race(it.value.toInt(), 0)
-                        gameNo++
-                    }
+                    duration = part.replace(" ", "").toLong()
                 }
 
                 string.startsWith("Distance:") -> {
-                    var gameNo = 1
                     val part = string.substringAfter("Distance: ")
-                    Regex("\\d+").findAll(part).forEach {
-                        val value = it.value.toInt()
-                        racesBuilder[gameNo] = racesBuilder.get(gameNo)!!.copy(recordDistance = value)
-                        gameNo++
-                    }
+                    recordTime = part.replace(" ", "").toLong()
                 }
             }
         }
-        races = racesBuilder.toMap()
-        boats = setOf(
-            Boat(0, 1)
-        )
-        races.print("races")
-        boats.print("boats")
+        race = Race(duration, recordTime)
     }
 }

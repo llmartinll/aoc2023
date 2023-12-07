@@ -5,87 +5,65 @@ import readInput
 import kotlin.system.measureTimeMillis
 
 fun main() {
-    val day = "day05"
+    val day = "day06"
     val test = readInput("$day/test")
     val input = readInput("$day/input")
 
+//    val solver = Day6(test)
+    val solver = Day6(input)
     val elapsed = measureTimeMillis {
-        Day5(test).run().println()
-        Day5(input).run().println()
+        solver.run().println()
     }
     "time taken: $elapsed ms".println()
 }
 
-class Day5(input: List<String>) {
-    data class MapEntry(val destinationRangeStart: Long, val sourceRangeStart: Long, val rangeLength: Long) {
-        fun getSourceRange(): LongRange {
-            return sourceRangeStart..sourceRangeStart + (rangeLength - 1)
-        }
+class Day6(input: List<String>) {
+    private val boat = Boat(0, 1)
+    private val races: Map<Int, Race>
 
-        fun getDestinationForSource(source: Long) =
-            destinationRangeStart + source - sourceRangeStart
+    data class Race(val duration: Int, val recordDistance: Int)
+    data class Boat(val startingSpeed: Int, val mmPerSecondIncrease: Int) {
+        fun getTravelDistance(holdTime: Int, raceDuration: Int) =
+            startingSpeed + (holdTime * mmPerSecondIncrease) * (raceDuration - holdTime)
     }
 
-    fun Set<MapEntry>.get(source: Long) =
-        this.find { source in it.getSourceRange() }?.getDestinationForSource(source) ?: source
+    fun run(): Long =
+        findNumberOfWaysToBeat(races, boat)
 
-    var seeds: MutableSet<Long> = mutableSetOf()
-    var seedToSoilMap: MutableSet<MapEntry> = mutableSetOf()
-    var soilToFertilizerMap: MutableSet<MapEntry> = mutableSetOf()
-    var fertilizerToWaterMap: MutableSet<MapEntry> = mutableSetOf()
-    var waterToLightMap: MutableSet<MapEntry> = mutableSetOf()
-    var lightToTemperatureMap: MutableSet<MapEntry> = mutableSetOf()
-    var temperatureToHumidityMap: MutableSet<MapEntry> = mutableSetOf()
-    var humidityToLocationMap: MutableSet<MapEntry> = mutableSetOf()
+    private fun findNumberOfWaysToBeat(races: Map<Int, Race>, boat: Boat) =
+        races
+            .map { findWinningTimes(it.value, boat).size.toLong() }
+            .reduce { acc, i -> acc * i }
 
-    private fun getLocationForSeed(seed: Long): Long {
-        val soil = seedToSoilMap.get(seed)
-        val fert = soilToFertilizerMap.get(soil)
-        val water = fertilizerToWaterMap.get(fert)
-        val light = waterToLightMap.get(water)
-        val temp = lightToTemperatureMap.get(light)
-        val hum = temperatureToHumidityMap.get(temp)
-        val loc = humidityToLocationMap.get(hum)
-        return loc
-    }
-
-    fun run(): Long {
-        val lowest = seeds.map(::getLocationForSeed).min()
-        return lowest
-    }
+    private fun findWinningTimes(race: Race, boat: Boat): List<Int> =
+        (0..race.duration)
+            .filter { boat.getTravelDistance(it, race.duration) > race.recordDistance }
 
     init {
-        var currentMap: MutableSet<MapEntry> = seedToSoilMap
+        val racesBuilder: MutableMap<Int, Race> = mutableMapOf()
+
         input.forEach { string ->
             when {
-                string.startsWith("seeds") -> {
-                    val part = string.substringAfter("seeds: ")
+                string.startsWith("Time:") -> {
+                    var gameNo = 1
+                    val part = string.substringAfter("Time: ")
                     Regex("\\d+").findAll(part).forEach {
-                        seeds.add(it.value.toLong())
+                        racesBuilder[gameNo] = Race(it.value.toInt(), 0)
+                        gameNo++
                     }
                 }
 
-                string.contains("map:") -> {
-                    when (string) {
-                        "seed-to-soil map:" -> currentMap = seedToSoilMap
-                        "soil-to-fertilizer map:" -> currentMap = soilToFertilizerMap
-                        "fertilizer-to-water map:" -> currentMap = fertilizerToWaterMap
-                        "water-to-light map:" -> currentMap = waterToLightMap
-                        "light-to-temperature map:" -> currentMap = lightToTemperatureMap
-                        "temperature-to-humidity map:" -> currentMap = temperatureToHumidityMap
-                        "humidity-to-location map:" -> currentMap = humidityToLocationMap
+                string.startsWith("Distance:") -> {
+                    var gameNo = 1
+                    val part = string.substringAfter("Distance: ")
+                    Regex("\\d+").findAll(part).forEach {
+                        val value = it.value.toInt()
+                        racesBuilder[gameNo] = racesBuilder.get(gameNo)!!.copy(recordDistance = value)
+                        gameNo++
                     }
-                }
-
-                string.isBlank() -> {
-                    return@forEach
-                }
-
-                else -> {
-                    val numbers = Regex("\\d+").findAll(string).take(3).map { it.value.toLong() }.toList()
-                    currentMap.add(MapEntry(numbers[0], numbers[1], numbers[2]))
                 }
             }
         }
+        races = racesBuilder.toMap()
     }
 }

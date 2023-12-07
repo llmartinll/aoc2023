@@ -28,3 +28,8 @@ fun <T> T.print(prepend: String = "Test"): T {
 data class Point(val x: Int, val y: Int) {
     override fun toString() = "($x,$y)"
 }
+
+fun LongRange.overLapWith(other: LongRange): LongRange =
+    kotlin.math.max(this.first, other.first)..kotlin.math.min(this.last, other.last)
+
+fun LongRange.shift(shift: Long) = this.first + shift..this.last + shift
