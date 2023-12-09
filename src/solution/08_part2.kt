@@ -37,21 +37,15 @@ class Day8_part2(input: List<String>) {
 
     // from google
     private fun primeFactors(number: Long): ArrayList<Long> {
-
         // Array that contains all the prime factors of given number.
         val arr: ArrayList<Long> = arrayListOf()
-
-
         var n = number
-
         // At first check for divisibility by 2. add it in arr till it is divisible
         while (n % 2 == 0L) {
             arr.add(2)
             n /= 2
         }
-
         val squareRoot = Math.sqrt(n.toDouble()).toLong()
-
         // Run loop from 3 to square root of n. Check for divisibility by i. Add i in arr till it is divisible by i.
         for (i in 3..squareRoot step 2) {
             while (n % i == 0L) {
@@ -59,12 +53,10 @@ class Day8_part2(input: List<String>) {
                 n /= i
             }
         }
-
         // If n is a prime number greater than 2.
         if (n > 2) {
             arr.add(n)
         }
-
         return arr
     }
 
