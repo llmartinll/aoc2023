@@ -4,7 +4,7 @@ import println
 import readInput
 
 fun main() {
-    Day13(readInput("day13/input")).run().println()
+    Day13(readInput("day13/test")).run().println()
 }
 
 class Day13(input: List<String>) {
@@ -26,7 +26,10 @@ class Day13(input: List<String>) {
     private val field: Field
 
     fun run(): Long {
-        return field.patterns.map(::getPoints).sum().toLong()
+        return field.patterns.map(::getPoints).map {
+            println(it)
+            it
+        }.sum().toLong()
     }
 
     private fun getPoints(pattern: Pattern): Int {
