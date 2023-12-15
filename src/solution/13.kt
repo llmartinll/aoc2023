@@ -8,21 +8,8 @@ fun main() {
 }
 
 class Day13(input: List<String>) {
-    data class Pattern(val lines: List<List<Char>>) {
-        fun print() {
-            lines.forEach { println(it) }
-        }
-    }
-
-    data class Field(val patterns: List<Pattern>) {
-        fun print() {
-            patterns.forEach {
-                it.print()
-                println("")
-            }
-        }
-    }
-
+    data class Pattern(val lines: List<List<Char>>)
+    data class Field(val patterns: List<Pattern>)
     private val field: Field
 
     fun run(): Long {

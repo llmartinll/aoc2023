@@ -8,30 +8,17 @@ fun main() {
 }
 
 class Day13_part2(input: List<String>) {
-    data class Pattern(val lines: List<List<Char>>) {
-        fun print() {
-            lines.forEach {
-                it.forEach { print(it) }
-                println("")
-            }
-            println("")
-        }
-    }
-
+    data class Pattern(val lines: List<List<Char>>)
     data class Field(val patterns: List<Pattern>)
-
     private val field: Field
 
     fun run(): Long {
-        return field.patterns.map(::getPoints).map {
-            println("points: $it")
-            it
-        }.sum().toLong()
+        return field.patterns.map(::getPoints).sum().toLong()
     }
 
     private fun getPoints(pattern: Pattern): Int {
-        val horizontalReflectionPoint = getReflectionLines(pattern)
-        val verticalReflectionPoint = getReflectionLines(pattern.transpose())
+        val hLines = getReflectionLines(pattern)
+        val vLines = getReflectionLines(pattern.transpose())
 
         pattern.lines.forEachIndexed { lineIndex, line ->
             line.forEachIndexed { charIndex, char ->
@@ -41,27 +28,15 @@ class Day13_part2(input: List<String>) {
                 lines[lineIndex] = newLine
                 val newPattern = Pattern(lines)
 
-                val newHorizontalReflectionPoint = getReflectionLines(newPattern)
-
-                if (newHorizontalReflectionPoint != null && newHorizontalReflectionPoint != horizontalReflectionPoint) {
-//                    "old horrizontal: $horizontalReflectionPoint new: $newHorizontalReflectionPoint".println()
-                    return 100 * newHorizontalReflectionPoint
+                val newHlines = getReflectionLines(newPattern)
+                val newVLines = getReflectionLines(newPattern.transpose())
+                if (newHlines.any { !hLines.contains(it) }) {
+                    return newHlines.first { !hLines.contains(it) } * 100
                 }
-                val newVerticalRflectionPoint = getReflectionLines(newPattern.transpose())
-//                "transposed".println()
-                if (newVerticalRflectionPoint != null && newVerticalRflectionPoint != verticalReflectionPoint) {
-//                    "old vertical pattern: $verticalReflectionPoint new: $newVerticalRflectionPoint".println()
-                    return newVerticalRflectionPoint
+                if (newVLines.any { !vLines.contains(it) }) {
+                    return newVLines.first { !vLines.contains(it) }
                 }
             }
-        }
-        println("unchanged!")
-        pattern.print()
-        if (horizontalReflectionPoint != null) {
-            return horizontalReflectionPoint
-        }
-        if (verticalReflectionPoint != null) {
-            return verticalReflectionPoint
         }
         throw IllegalStateException("bla")
     }
