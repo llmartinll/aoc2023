@@ -30,21 +30,29 @@ fun LongRange.overLapWith(other: LongRange): LongRange =
 fun LongRange.shift(shift: Long) = this.first + shift..this.last + shift
 
 
-data class Pos(val row: Int, val column: Int) {
-    override fun toString() = "($row,$column)"
+data class Pos(val line: Int, val column: Int) {
+    override fun toString() = "($line,$column)"
 }
+
+fun Pos.getNext(dir: Dir): Pos =
+    when (dir) {
+        Dir.N -> Pos(this.line - 1, this.column)
+        Dir.E -> Pos(this.line, this.column + 1)
+        Dir.S -> Pos(this.line + 1, this.column)
+        Dir.W -> Pos(this.line, this.column - 1)
+    }
 
 enum class Dir { N, E, S, W }
 
 fun Pos.move(dir: Dir) = when (dir) {
-    Dir.N -> Pos(this.row - 1, this.column)
-    Dir.E -> Pos(this.row, this.column + 1)
-    Dir.S -> Pos(this.row + 1, this.column)
-    Dir.W -> Pos(this.row, this.column - 1)
+    Dir.N -> Pos(this.line - 1, this.column)
+    Dir.E -> Pos(this.line, this.column + 1)
+    Dir.S -> Pos(this.line + 1, this.column)
+    Dir.W -> Pos(this.line, this.column - 1)
 }
 
-fun <T> Pos.existsIn(grid: Map<Pos, T>) = this.row >= 0 && this.row <= grid.entries.last().key.row && this.column >= 0 && this.column <= grid.entries.last().key.column
-fun <T> Map<Pos, T>.lastRow() = this.entries.last().key.row
+fun <T> Pos.existsIn(grid: Map<Pos, T>) = this.line >= 0 && this.line <= grid.entries.last().key.line && this.column >= 0 && this.column <= grid.entries.last().key.column
+fun <T> Map<Pos, T>.lastRow() = this.entries.last().key.line
 fun <T> Map<Pos, T>.lastColumn() = this.entries.last().key.column
 
 fun <T> Map<Pos, T>.print() {
