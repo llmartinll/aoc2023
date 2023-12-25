@@ -26,7 +26,6 @@ class Day14(input: List<String>) {
             changed = false
             grid.filter { it.value == ROCK_TYPE.ROUNDED && it.key.canMoveNorth() }.entries.firstOrNull()?.let { first ->
                 changed = true
-                "moving $first to ${Pos(first.key.line - 1, first.key.column)}: ${first.value}".println()
                 grid.remove(first.key)
                 grid[Pos(first.key.line - 1, first.key.column)] = first.value
             }

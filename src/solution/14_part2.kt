@@ -13,7 +13,6 @@ fun main() {
 class Day14_part2(input: List<String>) {
     private enum class ROCK_TYPE(val char: Char) {
         ROUNDED('O'), CUBED('#');
-
         override fun toString(): String = "${this.char}"
     }
 
